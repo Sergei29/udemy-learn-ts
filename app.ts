@@ -1,40 +1,19 @@
-// const person: {
-//   name: string;
-//   age: number;
-//   hobbies: string[];
-//   role: [number, string];
-// } = {
-//   name: "Serge",
-//   age: 45,
-//   hobbies: ["Sports", "Cooking"],
-//   role: [2, "author"],
-// };
+let userInput: unknown;
+let userName: string;
 
-enum Role {
-  ADMIN = "ADMIN",
-  READ_ONLY = "READ_ONLY",
-  AUTHOR = "AUTHOR",
+userInput = 5;
+userInput = "Serge";
+
+if (typeof userInput === "string") {
+  userName = userInput;
 }
 
-const person: {
-  name: string;
-  age: number;
-  hobbies: string[];
-  role: Role;
-} = {
-  name: "Serge",
-  age: 45,
-  hobbies: ["Sports", "Cooking"],
-  role: Role.ADMIN,
+let errorHandling: (msg: string, code: number) => never;
+
+const errorMessage = (message: string, code: number) => {
+  throw new Error(`${message}, error code: ${code}`);
 };
 
-let favouriteActivities: string[];
+errorHandling = errorMessage;
 
-favouriteActivities = ["Sports"];
-
-console.log("person: ", person);
-
-for (const hobby of person.hobbies) {
-  console.log(hobby.toUpperCase());
-  // console.log(hobby.map()); !!! ERROR - good !
-}
+errorHandling("not found.", 404);
