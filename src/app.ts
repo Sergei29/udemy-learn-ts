@@ -1,33 +1,24 @@
-const add = (a: number, b: number = 1) => a + b;
+interface Named {
+  readonly name: string;
+}
 
-const printOutput = (result: string | number) => {
-  console.log("Result: ", result);
-};
+interface Greetable extends Named {
+  greet(phrase: string): void;
+}
 
-printOutput(add(5, 2));
+let user1: Greetable;
 
-const addAll = (...numbers: number[]) =>
-  numbers.reduce((acc, current) => {
-    return (acc += current);
-  }, 0);
+class Person implements Greetable {
+  name: string;
+  age = 30;
 
-printOutput(addAll(1, 2, 3, 4, 5));
+  constructor(n: string) {
+    this.name = n;
+  }
 
-const addOnlyThree = (...nums: [number, number, number]) =>
-  nums.reduce((acc, current) => (acc += current), 0);
+  greet(phrase: string) {
+    console.log(phrase);
+  }
+}
 
-printOutput(addOnlyThree(1, 2, 3));
-
-const hobbies = ["Cooking", "Sports", "Singing", "Programming"];
-const person = {
-  firstName: "Serge",
-  age: 45,
-};
-
-const [hobby1, hobby2, ...otherHobbies] = hobbies;
-console.log("hobby1: ", hobby1);
-console.log("hobby2: ", hobby2);
-console.log("otherHobbies: ", otherHobbies);
-
-const { firstName, age } = person;
-console.log("firstName: ", firstName, ", age: ", age);
+user1 = new Person("John");
