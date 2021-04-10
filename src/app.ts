@@ -47,16 +47,36 @@ const pers = new Person();
 
 // Property & Method decorators:
 
+/**
+ * @description property decorator
+ * @param {any} target class instance
+ * @param {Sring} propertyName property name
+ * @returns {undefined}
+ */
 function Log(target: any, propertyName: string | Symbol) {
   console.log("\nProperty decorator");
   console.log(target, propertyName);
 }
 
+/**
+ * @description accessor decorator - getters and setters
+ * @param {any} target class instance
+ * @param {String} name accessor name
+ * @param {PropertyDescriptor} descriptor
+ * @returns {any} can return a new `PropertyDescriptor` with updated values, which can upgrade the existing accessor
+ */
 function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("\nAccessor decorator!");
   console.log(target, name, descriptor);
 }
 
+/**
+ * @description method decorator - class method
+ * @param {any} target class instance
+ * @param {String} name method name
+ * @param {PropertyDescriptor} descriptor
+ * @returns {any} can return a new `PropertyDescriptor` with updated values, which can upgrade the existing method
+ */
 function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("\nMethod decorator!");
   console.log(`target :>> `, target);
@@ -64,6 +84,13 @@ function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("descriptor :>> ", descriptor);
 }
 
+/**
+ * @description parameter, argument decorator
+ * @param {any} target class instance
+ * @param {String} methodName method name where the argumeht is passed
+ * @param {Number} argPosition index position of the argument starting from 0
+ * @returns {undefined}
+ */
 function Log4(target: any, methodName: string, argPosition: number) {
   console.log("\nParameter decorator!");
   console.log("target :>> ", target);
