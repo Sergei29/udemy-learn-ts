@@ -7,22 +7,33 @@ function Logger(logMessage: string) {
   };
 }
 
+/**
+ * @description class decorator
+ * @param {String} template template to insert
+ * @param {String} hookId dom element ID
+ * @returns {ClassDecorator} new enhanced class. And now all of a sudden we are able to add logic that does not run when the class is defined. But when the class is instantiated.
+ */
 function WithTemplate(template: string, hookId: string) {
   console.log("Template Factory");
 
-  return function (constructor: any) {
-    console.log("Rendering template...");
-
-    const hookEl = document.getElementById(hookId);
-    const p = new constructor();
-    if (hookEl) {
-      hookEl.innerHTML = template;
-      hookEl.querySelector("h1")!.textContent = p.name;
-    }
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
+    return class extends originalConstructor {
+      constructor(..._: any[]) {
+        super();
+        console.log("Rendering template...");
+        const hookEl = document.getElementById(hookId);
+        if (hookEl) {
+          hookEl.innerHTML = template;
+          hookEl.querySelector("h1")!.textContent = this.name;
+        }
+      }
+    };
   };
 }
 
-@Logger("Logging user...")
+@Logger("\nLogging user...")
 @WithTemplate("<h1>My Person Object.</h1>", "app")
 class Person {
   name = "Serge";
@@ -31,26 +42,33 @@ class Person {
   }
 }
 
-// const pers = new Person();
+const pers = new Person();
 // console.log(pers);
 
 // Property & Method decorators:
 
 function Log(target: any, propertyName: string | Symbol) {
-  console.log("Property decorator");
+  console.log("\nProperty decorator");
   console.log(target, propertyName);
 }
 
 function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
-  console.log("Accessor decorator!");
+  console.log("\nAccessor decorator!");
   console.log(target, name, descriptor);
 }
 
 function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
-  console.log("Method decorator!");
+  console.log("\nMethod decorator!");
   console.log(`target :>> `, target);
   console.log("name :>> ", name);
   console.log("descriptor :>> ", descriptor);
+}
+
+function Log4(target: any, methodName: string, argPosition: number) {
+  console.log("\nParameter decorator!");
+  console.log("target :>> ", target);
+  console.log("methodName :>> ", methodName);
+  console.log("argPosition :>> ", argPosition);
 }
 
 class Product {
@@ -77,7 +95,7 @@ class Product {
   }
 
   @Log3
-  getPriceWithTax(tax: number) {
+  getPriceWithTax(@Log4 tax: number) {
     return this.price * (1 + tax);
   }
 }
