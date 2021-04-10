@@ -92,3 +92,29 @@ __decorate([
     Log3,
     __param(0, Log4)
 ], Product.prototype, "getPriceWithTax", null);
+function Autobind(_, _2, descriptor) {
+    const originalMethod = descriptor.value;
+    const updatedDescriptor = {
+        configurable: true,
+        enumerable: false,
+        get() {
+            const boundFunc = originalMethod.bind(this);
+            return boundFunc;
+        },
+    };
+    return updatedDescriptor;
+}
+class Printer {
+    constructor() {
+        this.message = "This works!";
+    }
+    showMesssage() {
+        console.log(this.message);
+    }
+}
+__decorate([
+    Autobind
+], Printer.prototype, "showMesssage", null);
+const printer = new Printer();
+const button = document.querySelector("button");
+button.addEventListener("click", printer.showMesssage);

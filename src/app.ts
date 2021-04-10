@@ -49,7 +49,7 @@ const pers = new Person();
 
 /**
  * @description property decorator
- * @param {any} target class instance
+ * @param {any} target object prototype or constructor method(if used for static)
  * @param {Sring} propertyName property name
  * @returns {undefined}
  */
@@ -60,7 +60,7 @@ function Log(target: any, propertyName: string | Symbol) {
 
 /**
  * @description accessor decorator - getters and setters
- * @param {any} target class instance
+ * @param {any} target object prototype or constructor method(if used for static)
  * @param {String} name accessor name
  * @param {PropertyDescriptor} descriptor
  * @returns {any} can return a new `PropertyDescriptor` with updated values, which can upgrade the existing accessor
@@ -72,10 +72,10 @@ function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
 
 /**
  * @description method decorator - class method
- * @param {any} target class instance
+ * @param {any} target object prototype or constructor method(if used for static)
  * @param {String} name method name
  * @param {PropertyDescriptor} descriptor
- * @returns {any} can return a new `PropertyDescriptor` with updated values, which can upgrade the existing method
+ * @returns {any} can return a new `PropertyDescriptor` with updated values, which can upgrade the existing method or configuration of the method
  */
 function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("\nMethod decorator!");
@@ -86,7 +86,7 @@ function Log3(target: any, name: string, descriptor: PropertyDescriptor) {
 
 /**
  * @description parameter, argument decorator
- * @param {any} target class instance
+ * @param {any} target object prototype or constructor method(if used for static)
  * @param {String} methodName method name where the argumeht is passed
  * @param {Number} argPosition index position of the argument starting from 0
  * @returns {undefined}
@@ -126,3 +126,37 @@ class Product {
     return this.price * (1 + tax);
   }
 }
+
+/**
+ * @description that's our decorator function returning a new descriptor object and therefore this descriptor object will override the old descriptor.
+ */
+function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  const updatedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    get() {
+      const boundFunc = originalMethod.bind(this);
+      return boundFunc;
+    },
+  };
+
+  return updatedDescriptor;
+}
+
+class Printer {
+  message = "This works!";
+
+  @Autobind
+  showMesssage() {
+    console.log(this.message);
+  }
+}
+
+const printer = new Printer();
+const button = document.querySelector("button")!;
+
+// button.addEventListener("click", printer.showMesssage.bind(p)); // if without Autobinder decorator
+
+button.addEventListener("click", printer.showMesssage);
